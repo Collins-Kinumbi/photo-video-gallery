@@ -32,7 +32,7 @@ function Navbar() {
           </Link>
         </li>
         <li>
-          <Link href="/vidoes">
+          <Link href="/videos">
             <Image
               src="/images/video.png"
               width={45}

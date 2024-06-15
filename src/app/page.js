@@ -10,19 +10,27 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const initialLoad = useRef(true);
+  const fetchedPhotoIds = useRef(new Set());
 
   // Function to fetch photos
   async function loadPhotos(page) {
     setLoading(true);
     const trendingImagesUrl = "https://api.pexels.com/v1/curated";
     const newPhotos = await fetchData(trendingImagesUrl, params(10, page));
-    // console.log(`Fetching page ${page}`, newPhotos);
     setLoading(false);
 
     if (newPhotos.photos.length === 0) {
       setHasMore(false);
     } else {
-      setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos.photos]);
+      // Filter out already fetched photos
+      const uniqueNewPhotos = newPhotos.photos.filter(
+        (photo) => !fetchedPhotoIds.current.has(photo.id)
+      );
+
+      // Add new photo IDs to the set
+      uniqueNewPhotos.forEach((photo) => fetchedPhotoIds.current.add(photo.id));
+
+      setPhotos((prevPhotos) => [...prevPhotos, ...uniqueNewPhotos]);
     }
   }
 
@@ -32,7 +40,7 @@ export default function Home() {
       loadPhotos(page);
       initialLoad.current = false;
     }
-  }, []);
+  }, [page]);
 
   // Fetch more photos when page changes
   useEffect(() => {
@@ -65,7 +73,7 @@ export default function Home() {
         <div className="photo-gallery">
           {photos &&
             photos.map((photo, index) => (
-              <div className="photo-item" key={`${photo.id}-${index}`}>
+              <div className="photo-item" key={photo.id}>
                 <Image
                   src={photo.src.portrait}
                   alt={photo.alt}
@@ -73,14 +81,13 @@ export default function Home() {
                   height={1200}
                   priority
                 />
-                <div className="overlay">
-                  <span>photo by {photo.photographer}</span>
-                </div>
+                <div className="overlay"></div>
+                <div className="credit">photo by {photo.photographer}</div>
               </div>
             ))}
         </div>
-        {loading && <p>Loading photos...</p>}
-        {!hasMore && <p>No more photos available.</p>}
+        {loading && <p className="loading">Loading photos...</p>}
+        {!hasMore && <p className="no-more">No more photos available.</p>}
       </div>
     </main>
   );

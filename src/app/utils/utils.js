@@ -10,7 +10,7 @@ export function params(per = "20", page = "1", query = "") {
   };
 }
 
-export function auth() {
+function auth() {
   return {
     Authorization: `${key}`,
   };
