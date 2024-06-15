@@ -17,7 +17,7 @@ export default function Home() {
   async function loadPhotos(page) {
     setLoading(true);
     const trendingImagesUrl = "https://api.pexels.com/v1/curated";
-    const newPhotos = await fetchData(trendingImagesUrl, params(10, page));
+    const newPhotos = await fetchData(trendingImagesUrl, params(20, page));
     setLoading(false);
 
     if (newPhotos.photos.length === 0) {
