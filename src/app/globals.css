@@ -65,6 +65,7 @@ li {
   position: absolute;
   top: 1rem;
   left: 1rem;
+  margin-right: 2.8rem;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   padding: 5px;

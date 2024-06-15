@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { fetchData, params } from "@/app/utils/utils";
-import Image from "next/image";
+
+import Photos from "./components/Photos";
 
 export default function Home() {
   const [photos, setPhotos] = useState([]);
@@ -70,22 +71,7 @@ export default function Home() {
     <main>
       <div className="content">
         <h1>Trending photos</h1>
-        <div className="photo-gallery">
-          {photos &&
-            photos.map((photo, index) => (
-              <div className="photo-item" key={photo.id}>
-                <Image
-                  src={photo.src.portrait}
-                  alt={photo.alt}
-                  width={800}
-                  height={1200}
-                  priority
-                />
-                <div className="overlay"></div>
-                <div className="credit">photo by {photo.photographer}</div>
-              </div>
-            ))}
-        </div>
+        <Photos photos={photos} />
         {loading && <p className="loading">Loading photos...</p>}
         {!hasMore && <p className="no-more">No more photos available.</p>}
       </div>
