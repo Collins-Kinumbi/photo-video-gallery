@@ -23,21 +23,34 @@ function Navbar() {
         </li>
         <li>
           <Link href="/">
-            <Image src="/images/photo.png" width={45} height={45} />
+            <Image
+              src="/images/photo.png"
+              width={45}
+              height={45}
+              alt="photos"
+            />
           </Link>
         </li>
         <li>
           <Link href="/vidoes">
-            <Image src="/images/video.png" width={45} height={45} />
+            <Image
+              src="/images/video.png"
+              width={45}
+              height={45}
+              alt="vidoes"
+            />
           </Link>
         </li>
         <li>
-          <Image
-            className="about-logo"
-            src="/images/question.gif"
-            width={45}
-            height={45}
-          />
+          <Link href="/about">
+            <Image
+              className="about-logo"
+              src="/images/question.gif"
+              width={45}
+              height={45}
+              alt="go to about page"
+            />
+          </Link>
         </li>
       </ul>
     </nav>
