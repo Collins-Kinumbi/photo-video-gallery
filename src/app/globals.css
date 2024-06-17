@@ -10,7 +10,7 @@
 }
 
 html {
-  /* 10px / 16px = 0.625 === 62.5%*/
+  /* 10px / 16px = 0.625 === 62.5% */
   font-size: 62.5%;
   color: #333;
 }
@@ -25,7 +25,7 @@ li {
 
 .navbar {
   background-color: var(--dark-gray);
-  padding: 1.5rem 3rem;
+  padding: 0 2rem;
   font-size: 1.9rem;
   max-width: 100%;
 }
@@ -37,21 +37,49 @@ li {
   gap: 1rem;
 }
 
-.navbar input {
-  border: none;
-  padding: 1rem;
-  min-width: 50rem;
-  width: 100%;
+.searchForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
 }
 
-form input {
+.searchContainer {
   position: relative;
+  display: flex;
+  align-items: center;
+  width: 400px;
 }
 
 .select {
   position: absolute;
-  top: 0;
   right: 0;
+  height: 100%;
+  border: 2px solid #333;
+  background: var(--light-gray);
+  font-size: 1.6rem;
+  padding-left: 1rem;
+  border-radius: 1rem;
+  z-index: 2;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem 2rem;
+  font-size: 1.6rem;
+  border: none;
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.input::placeholder {
+  color: #999;
+}
+
+.select option {
+  background: #fff;
+  color: #333;
+  padding: 1rem;
 }
 
 .about-logo {
@@ -65,6 +93,7 @@ form input {
 .content h1 {
   margin-bottom: 2rem;
 }
+
 .loading,
 .no-more {
   text-align: center;
@@ -79,9 +108,9 @@ form input {
   margin-right: 2.8rem;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
-  padding: 5px;
-  border-radius: 3px;
-  font-size: 12px;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 1.2rem;
   z-index: 1;
 }
 
@@ -112,6 +141,7 @@ form input {
   display: block;
   transition: opacity 0.2s ease-in-out;
 }
+
 /* Image Overlay */
 .photo-item .overlay {
   position: absolute;
@@ -133,8 +163,25 @@ form input {
   opacity: 1;
 }
 
-/* video container */
+.download-icon {
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: var(--light-gray);
+  opacity: 0.7;
+  padding: 1rem;
+  border-radius: 1rem;
+}
 
+.download-icon:hover {
+  opacity: 1;
+}
+
+.download-icon img {
+  width: 2rem;
+}
+
+/* video container */
 .video-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));

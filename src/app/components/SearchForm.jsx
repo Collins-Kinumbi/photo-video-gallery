@@ -19,21 +19,24 @@ function SearchForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <select
-        className="select"
-        value={searchType}
-        onChange={(e) => setSearchType(e.target.value)}
-      >
-        <option value="photos">Photos</option>
-        <option value="videos">Videos</option>
-      </select>
-      <input
-        type="text"
-        placeholder={`Search for ${searchType}`}
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
+    <form onSubmit={handleSubmit} className="searchForm">
+      <div className="searchContainer">
+        <select
+          className="select"
+          value={searchType}
+          onChange={(e) => setSearchType(e.target.value)}
+        >
+          <option value="photos">Photos</option>
+          <option value="videos">Videos</option>
+        </select>
+        <input
+          type="text"
+          placeholder={`Search for ${searchType}`}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="input"
+        />
+      </div>
     </form>
   );
 }

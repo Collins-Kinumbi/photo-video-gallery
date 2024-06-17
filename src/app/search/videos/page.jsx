@@ -57,7 +57,7 @@ const SearchVideosPage = () => {
     <main>
       <div className="content">
         <h1>Search Results for "{query}"</h1>
-        {loading && <p>Loading...</p>}
+
         <div className="video-gallery">
           {videos.map((video) => (
             <div className="video-item" key={video.id}>
@@ -71,8 +71,8 @@ const SearchVideosPage = () => {
           ))}
         </div>
         <div ref={ref}></div>
-        {loading && <p>Loading more videos...</p>}
-        {!hasMore && <p>No more videos available.</p>}
+        {loading && <p className="loading">Loading...</p>}
+        {!hasMore && <p className="no-more">No more videos available.</p>}
       </div>
     </main>
   );
