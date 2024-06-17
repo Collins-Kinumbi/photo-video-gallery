@@ -3,13 +3,16 @@ function Photos({ photos }) {
   return (
     <div className="photo-gallery">
       {photos &&
-        photos.map((photo, index) => (
+        photos.map((photo) => (
           <div className="photo-item" key={photo.id}>
             <Image
               src={photo.src.portrait}
               alt={photo.alt}
               width={800}
               height={1200}
+              quality={100}
+              placeholder="blur"
+              blurDataURL="/images/loading.gif"
               priority
             />
             <div className="overlay"></div>

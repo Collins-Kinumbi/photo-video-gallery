@@ -44,6 +44,16 @@ li {
   width: 100%;
 }
 
+form input {
+  position: relative;
+}
+
+.select {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .about-logo {
   border-radius: 50%;
 }
