@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 function Photos({ photos }) {
   function handlePhotoDownload(url, filename) {
     fetch(url, {

@@ -101,6 +101,10 @@ li {
   margin-top: 2rem;
 }
 
+.loading {
+  animation: pulsate 1.5s ease-in-out infinite;
+}
+
 .credit {
   position: absolute;
   top: 1rem;
@@ -210,4 +214,20 @@ li {
 .video-item:hover {
   transform: scale(1.05);
   transition: transform 0.3s ease-in-out;
+}
+
+/* pulsing animation */
+@keyframes pulsate {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

@@ -26,6 +26,6 @@ export async function fetchData(url, params = {}) {
     const data = res.data;
     return data;
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
 }

@@ -12,39 +12,48 @@ const SearchPhotosPage = () => {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState(null);
   const fetchedPhotoIds = useRef(new Set());
 
   const searchParams = useSearchParams(); // Access search params directly
+
   const query = searchParams.get("query") || ""; // Get 'query' parameter from searchParams
 
   // Function to fetch photos
-  const loadPhotos = async (pageNumber) => {
+  async function loadPhotos(pageNumber) {
     setLoading(true);
-    const photoResults = await fetchData(
-      searchPhotosUrl,
-      params(20, pageNumber, query)
-    );
-    setLoading(false);
+    setError(null);
+    try {
+      const photoResults = await fetchData(
+        searchPhotosUrl,
+        params(20, pageNumber, query)
+      );
 
-    if (pageNumber === 1) {
-      // Reset state when fetching the first page
-      setPhotos(photoResults.photos);
-      fetchedPhotoIds.current.clear(); // Clear fetched photo IDs
+      if (pageNumber === 1) {
+        // Reset state when fetching the first page
+        setPhotos(photoResults.photos);
+        fetchedPhotoIds.current.clear(); // Clear fetched photo IDs
+      } else {
+        // Append new photos to photos
+        const uniqueNewPhotos = photoResults.photos.filter(
+          (photo) => !fetchedPhotoIds.current.has(photo.id)
+        );
+        setPhotos((prevPhotos) => [...prevPhotos, ...uniqueNewPhotos]);
+      }
+
+      // Update fetched photo IDs
       photoResults.photos.forEach((photo) =>
         fetchedPhotoIds.current.add(photo.id)
       );
-    } else {
-      // Append new photos to photos
-      const uniqueNewPhotos = photoResults.photos.filter(
-        (photo) => !fetchedPhotoIds.current.has(photo.id)
-      );
-      uniqueNewPhotos.forEach((photo) => fetchedPhotoIds.current.add(photo.id));
-      setPhotos((prevPhotos) => [...prevPhotos, ...uniqueNewPhotos]);
-    }
 
-    // Determine if there are more pages to fetch
-    setHasMore(photoResults.photos.length > 0);
-  };
+      // Determine if there are more pages to fetch
+      setHasMore(photoResults.photos.length > 0);
+    } catch (error) {
+      setError("Failed to load photos. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   // Fetch photos on initial load and when query changes
   useEffect(() => {
@@ -61,9 +70,9 @@ const SearchPhotosPage = () => {
     }
   }, [page]); // Fetch photos when page changes
 
-  // Infinite scroll event listener
+  // Infinite scroll event listener with debounce
   useEffect(() => {
-    const handleScroll = () => {
+    function handleScroll() {
       if (
         window.innerHeight + window.scrollY >=
           document.body.offsetHeight - 500 &&
@@ -72,11 +81,24 @@ const SearchPhotosPage = () => {
       ) {
         setPage((prevPage) => prevPage + 1);
       }
-    };
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const debounceScroll = debounce(handleScroll, 200);
+    window.addEventListener("scroll", debounceScroll);
+
+    return () => window.removeEventListener("scroll", debounceScroll);
   }, [loading, hasMore]); // Re-attach event listener on changes
+
+  // Debounce function
+  function debounce(func, delay) {
+    let timeout;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
 
   return (
     <main>
@@ -84,6 +106,7 @@ const SearchPhotosPage = () => {
         <h1>Search Results for "{query}"</h1>
         <Photos photos={photos} />
         {loading && <p className="loading">Loading photos...</p>}
+        {error && <p className="error">{error}</p>}
         {!hasMore && <p className="no-more">No more photos available.</p>}
       </div>
     </main>

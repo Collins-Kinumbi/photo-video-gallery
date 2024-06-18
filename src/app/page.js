@@ -2,57 +2,60 @@
 
 import { useEffect, useState, useRef } from "react";
 import { fetchData, params } from "@/app/utils/utils";
-
 import Photos from "./components/Photos";
 
-export default function Home() {
+const trendingImagesUrl = "https://api.pexels.com/v1/curated";
+
+const Home = () => {
   const [photos, setPhotos] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const initialLoad = useRef(true);
   const fetchedPhotoIds = useRef(new Set());
 
   // Function to fetch photos
-  async function loadPhotos(page) {
+  async function loadPhotos(pageNumber) {
     setLoading(true);
-    const trendingImagesUrl = "https://api.pexels.com/v1/curated";
-    const newPhotos = await fetchData(trendingImagesUrl, params(20, page));
-    setLoading(false);
+    try {
+      const newPhotos = await fetchData(
+        trendingImagesUrl,
+        params(20, pageNumber)
+      );
+      setLoading(false);
 
-    if (newPhotos.photos.length === 0) {
-      setHasMore(false);
-    } else {
-      // Filter out already fetched photos
-      const uniqueNewPhotos = newPhotos.photos.filter(
-        (photo) => !fetchedPhotoIds.current.has(photo.id)
+      if (pageNumber === 1) {
+        // Reset state when fetching the first page
+        setPhotos(newPhotos.photos);
+        fetchedPhotoIds.current.clear(); // Clear fetched photo IDs
+      } else {
+        // Append new photos to photos
+        const uniqueNewPhotos = newPhotos.photos.filter(
+          (photo) => !fetchedPhotoIds.current.has(photo.id)
+        );
+        setPhotos((prevPhotos) => [...prevPhotos, ...uniqueNewPhotos]);
+      }
+
+      // Update fetched photo IDs
+      newPhotos.photos.forEach((photo) =>
+        fetchedPhotoIds.current.add(photo.id)
       );
 
-      // Add new photo IDs to the set
-      uniqueNewPhotos.forEach((photo) => fetchedPhotoIds.current.add(photo.id));
-
-      setPhotos((prevPhotos) => [...prevPhotos, ...uniqueNewPhotos]);
+      // Determine if there are more pages to fetch
+      setHasMore(newPhotos.photos.length > 0);
+    } catch (error) {
+      console.error("Error fetching photos:", error);
+      setLoading(false);
     }
   }
 
   // Initial fetch
   useEffect(() => {
-    if (initialLoad.current) {
-      loadPhotos(page);
-      initialLoad.current = false;
-    }
-  }, [page]);
+    loadPhotos(page);
+  }, [page]); // Fetch photos when page changes
 
-  // Fetch more photos when page changes
+  // Infinite scroll event listener with debounce
   useEffect(() => {
-    if (!initialLoad.current && page > 1) {
-      loadPhotos(page);
-    }
-  }, [page]);
-
-  // Infinite scroll event listener
-  useEffect(() => {
-    const handleScroll = () => {
+    function handleScroll() {
       if (
         window.innerHeight + window.scrollY >=
           document.body.offsetHeight - 500 &&
@@ -61,11 +64,24 @@ export default function Home() {
       ) {
         setPage((prevPage) => prevPage + 1);
       }
-    };
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, hasMore]);
+    const debounceScroll = debounce(handleScroll, 200);
+    window.addEventListener("scroll", debounceScroll);
+
+    return () => window.removeEventListener("scroll", debounceScroll);
+  }, [loading, hasMore]); // Re-attach event listener on changes
+
+  // Debounce function
+  function debounce(func, delay) {
+    let timeout;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
 
   return (
     <main>
@@ -77,4 +93,6 @@ export default function Home() {
       </div>
     </main>
   );
-}
+};
+
+export default Home;
