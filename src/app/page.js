@@ -1,5 +1,6 @@
 "use client";
 
+import Head from "next/head";
 import { useEffect, useState, useRef } from "react";
 import { fetchData, params } from "./utils/utils";
 import Photos from "./components/Photos";
@@ -84,14 +85,19 @@ const Home = () => {
   }
 
   return (
-    <main>
-      <div className="content">
-        <h1>Trending photos</h1>
-        <Photos photos={photos} />
-        {loading && <p className="loading">Loading photos...</p>}
-        {!hasMore && <p className="no-more">No more photos available.</p>}
-      </div>
-    </main>
+    <div>
+      <Head>
+        <link rel="shortcut icon" href="/favicon.ico" />
+      </Head>
+      <main>
+        <div className="content">
+          <h1>Trending photos</h1>
+          <Photos photos={photos} />
+          {loading && <p className="loading">Loading photos...</p>}
+          {!hasMore && <p className="no-more">No more photos available.</p>}
+        </div>
+      </main>
+    </div>
   );
 };
 
