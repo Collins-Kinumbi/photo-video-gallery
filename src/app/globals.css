@@ -216,6 +216,28 @@ li {
   transition: transform 0.3s ease-in-out;
 }
 
+/* about */
+.about {
+  background-color: var(--dark-gray);
+  font-size: 2.2rem;
+  padding: 2rem 2.4rem;
+  color: #333;
+  border-radius: 1rem;
+  line-height: 1.3;
+}
+.about a {
+  text-decoration: none;
+  color: #fcfcfc;
+  background-color: #696969;
+  padding: 0.3rem 0.4rem;
+  border-radius: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.about p:not(:last-child) {
+  margin-bottom: 2rem;
+}
+
 /* pulsing animation */
 @keyframes pulsate {
   0% {
