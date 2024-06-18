@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { fetchData, params } from "@/app/utils/utils";
+import { fetchData, params } from "./utils/utils";
 import Photos from "./components/Photos";
 
 const trendingImagesUrl = "https://api.pexels.com/v1/curated";

@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { fetchData, params } from "../../utils/utils";
-import Photos from "../../components/Photos";
+import { fetchData, params } from "@/app/utils/utils";
+import Photos from "@/app/components/Photos";
 
 const searchPhotosUrl = "https://api.pexels.com/v1/search";
 

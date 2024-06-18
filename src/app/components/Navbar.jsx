@@ -10,6 +10,7 @@ function Navbar() {
         <li>
           <Link href="/">
             <Image
+              className="logo"
               src="/images/logo.gif"
               width={45}
               height={45}
@@ -24,6 +25,7 @@ function Navbar() {
         <li>
           <Link href="/">
             <Image
+              className="photo-logo"
               src="/images/photo.png"
               width={45}
               height={45}
@@ -34,6 +36,7 @@ function Navbar() {
         <li>
           <Link href="/videos">
             <Image
+              className="videos-logo"
               src="/images/video.png"
               width={45}
               height={45}
