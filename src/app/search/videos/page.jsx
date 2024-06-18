@@ -18,36 +18,55 @@ const SearchVideosPage = () => {
     threshold: 0.5, // Load more when the component is 50% in view
   });
 
+  const initialLoad = useRef(true);
+
+  // Function to load videos
+  async function loadVideos(pageNumber) {
+    setLoading(true);
+    try {
+      const videoResults = await fetchData(
+        searchVideosUrl,
+        params(10, pageNumber, query)
+      );
+
+      if (pageNumber === 1) {
+        // Reset videos on initial load
+        setVideos(videoResults.videos);
+      } else {
+        // Append new videos
+        setVideos((prevVideos) => [...prevVideos, ...videoResults.videos]);
+      }
+
+      // Determine if there are more videos to load
+      setHasMore(videoResults.videos.length > 0);
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Effect to fetch videos when query changes or page number changes
   useEffect(() => {
     if (query) {
-      setVideos([]); // Clear previous results
       setPage(1); // Reset page number
-      setHasMore(true); // Reset hasMore
+      setVideos([]); // Clear previous videos
+      setHasMore(true); // Reset hasMore to true
     }
   }, [query]);
 
   useEffect(() => {
-    const loadVideos = async () => {
-      setLoading(true);
-      const videoResults = await fetchData(
-        searchVideosUrl,
-        params(10, page, query)
-      );
-      setLoading(false);
-
-      if (videoResults.videos.length === 0) {
-        setHasMore(false);
-      } else {
-        setVideos((prevVideos) => [...prevVideos, ...videoResults.videos]);
-      }
-    };
-
-    if (query) {
-      loadVideos();
+    if (query && !initialLoad.current) {
+      loadVideos(page);
     }
   }, [query, page]);
 
   useEffect(() => {
+    if (initialLoad.current) {
+      initialLoad.current = false;
+      return;
+    }
+
     if (inView && hasMore && !loading) {
       setPage((prevPage) => prevPage + 1);
     }

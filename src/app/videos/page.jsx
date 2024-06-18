@@ -13,40 +13,56 @@ export default function VideosPage() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const loadedVideoIds = useRef(new Set());
+  const videoItemRefs = useRef([]);
 
   const { ref, inView } = useInView({
     threshold: 0.5, // Load more when the component is 50% in view
   });
 
-  const loadVideos = async (page) => {
+  // Function to fetch videos
+  const loadVideos = async (pageNumber) => {
     setLoading(true);
-    const videoData = await fetchData(trendingVideosUrl, params(10, page));
-    setLoading(false);
-
-    if (videoData.videos.length === 0) {
-      setHasMore(false);
-    } else {
-      const newVideos = videoData.videos.filter(
-        (video) => !loadedVideoIds.current.has(video.id)
+    try {
+      const videoData = await fetchData(
+        trendingVideosUrl,
+        params(10, pageNumber)
       );
-      newVideos.forEach((video) => loadedVideoIds.current.add(video.id));
-      setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+      setLoading(false);
+
+      if (pageNumber === 1) {
+        // Clear previous videos on initial load
+        setVideos(videoData.videos);
+        loadedVideoIds.current.clear(); // Clear loaded video IDs
+      } else {
+        // Append new videos
+        const newVideos = videoData.videos.filter(
+          (video) => !loadedVideoIds.current.has(video.id)
+        );
+        newVideos.forEach((video) => loadedVideoIds.current.add(video.id));
+        setVideos((prevVideos) => [...prevVideos, ...newVideos]);
+      }
+
+      // Determine if there are more videos to load
+      setHasMore(videoData.videos.length > 0);
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+      setLoading(false);
     }
   };
 
+  // Initial load of videos
   useEffect(() => {
     loadVideos(page);
   }, [page]);
 
+  // Load more videos when in view and there are more to load
   useEffect(() => {
     if (inView && hasMore && !loading) {
       setPage((prevPage) => prevPage + 1);
     }
   }, [inView, hasMore, loading]);
 
-  const videoItemRefs = useRef([]);
-  videoItemRefs.current = [];
-
+  // Add video item refs function
   const addToRefs = useCallback((el) => {
     if (el && !videoItemRefs.current.includes(el)) {
       videoItemRefs.current.push(el);
